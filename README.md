@@ -2,7 +2,7 @@
 
 **MVP Status:** \[e.g., v1.0-Production]
 
-**Group Members:** Adrien, Axelle, Name 3, Name 4
+**Group Members:** Adrien, Axelle, Nour R, Gabrièle
 
 
 ## **🎯 Project Overview**
