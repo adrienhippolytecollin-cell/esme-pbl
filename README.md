@@ -2,7 +2,7 @@
 
 **MVP Status:** \[e.g., v1.0-Production]
 
-**Group Members:** Collin, Name 2, Name 3, Name 4
+**Group Members:** Adrien, Axelle, Name 3, Name 4
 
 
 ## **🎯 Project Overview**
