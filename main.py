@@ -35,6 +35,61 @@ def draw_grid():
             buttons_in_cols.append(button)
         buttons.append(buttons_in_cols)
 
+def print_winner():
+    global win
+    if win is False:
+        win = True
+        print("Le joueur", current_player, "a gagné le jeu")
+
+
+def check_win(current_row, current_col):
+
+    # detecter victoire horizontale
+    count = 0
+    for i in range(3):
+        current_button = buttons[i][current_row]
+        if current_button['text'] == current_player:
+            count += 1
+    if count == 3:
+        print_winner()
+
+    # detecter victoire verticale
+    count = 0
+    for i in range(3):
+        current_button = buttons[current_col][i]
+        if current_button['text'] == current_player:
+            count += 1
+    if count == 3:
+        print_winner()
+
+    # detecter victoire diagonale
+    count = 0
+    for i in range(3):
+        current_button = buttons[i][i]
+        if current_button['text'] == current_player:
+            count += 1
+    if count == 3:
+        print_winner()
+
+    # detecter victoire diagonale inversee
+    count = 0
+    for i in range(3):
+        current_button = buttons[2-i][i]
+        if current_button['text'] == current_player:
+            count += 1
+    if count == 3:
+        print_winner()
+
+    if win is False:
+        count = 0
+        for col in range(3):
+            for row in range(3):
+                current_button = buttons[col][row]
+                if current_button['text'] == 'X' or current_button['text'] == '0':
+                    count += 1
+        if count == 9:
+            print("Match nul")
+
 
 #personnalising the window
 root.title("tictactoe")
@@ -42,5 +97,6 @@ root.minsize(600 , 600)
 
 draw_grid()
 root.mainloop 
+
 
 
