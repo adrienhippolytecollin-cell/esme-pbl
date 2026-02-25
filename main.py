@@ -4,8 +4,15 @@ import tkinter as tk
 root = tk.Tk()
 
 
+#choosing the current player 
+def switch_player():
+    global current_player
+    if current_player == 'X':
+        current_player = '0'
+    else:
+        current_player = 'X'
 
-#when the current player clicks, its symbol gets put on the grid 
+#when the current player clicks, its corresponding symbol gets put on the grid 
 def place_symbol(row, column):
 
     clicked_button = buttons[column][row]
@@ -35,4 +42,5 @@ root.minsize(600 , 600)
 
 draw_grid()
 root.mainloop 
+
 
