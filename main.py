@@ -88,7 +88,7 @@ def place_symbol(row, column):
 
 
 # drawing the grid inside a function to have a more efficient code (it endend up working) 
-    def draw_grid():
+def draw_grid():
     for col in range(3):
         buttons_in_cols = []
         for row in range(3):
@@ -109,3 +109,4 @@ root.minsize(500, 500)
 
 draw_grid()
 root.mainloop()
+
