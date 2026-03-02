@@ -150,3 +150,79 @@ draw_grid()
 root.mainloop()
 
 
+def evaluation(board):
+    # evaluation function: -1000 if the player won, +1000 if thee AI won
+    if check_winner(board, 1):
+        return 1000
+    is check_winner(board, -1):
+        return -1000
+    return 0
+
+def square_available(board):
+    #returns a list of the empty squares
+    list = []
+    for square in enumerate(board):
+        if square == 0:
+            list.append(square)
+    return list
+
+def minimax(board, level, is_max, level_max=None):
+    """
+    parameters: 
+    - board: actual state of the game (list of 9 elements for each square)
+    - level: actual level in the tree
+    - is_max: true if its the AI's turn (node max), else: false (nose min)
+    - level_max: maximal level that we are looking for (None = unlimited)
+
+    returns: the score of the best combijation found
+    """
+    #basic case: end of the game or maximal level reached
+    score = evaluation(board)
+    if score != 0: # someone won
+        return score 
+    if is_full(board): # tie
+        return 0
+    if level_max is not None and level >= level_max:
+        return 0 #we stop looking
+
+    available = squares_available(board)
+
+    if is_max: 
+        # Node max : the AI looks for the highest score
+        best_score = float ('-inf')
+        for case in available: 
+            board[square] = 1 # the AI plays
+            score = minimax(board, level + 1, False, level_max)
+            board[square] = max(bes_score, score)
+        return best_score
+
+    else:
+        # node min : the other player looks for the lowest score
+        for square in available:
+            board[square] = -1 # the human player plays
+            score = minimax(board, level + 1, True, level_max)
+            board[case] = 0 # we cancel the play
+            best_score = min(best_score, score)
+        return best_score
+
+def best_play(board, level_max=None):
+    """
+    finds the best combination of plays using the minimac function
+    returns: 
+    - the index of the square the AI must play
+    - the score associated to this play
+    """
+    best_score = float('-inf')
+    best_index = -1
+    for square in square_available(board):
+        board[square] = 1 #the AI plays
+        score = minimax(board, 1, False, level_max)
+        board[square] = 0
+
+        print(f" Square {square} -> score = {score}")
+        if score > best_score:
+            best_score = score
+            best_index = square
+
+    return best_index, best_score
+
