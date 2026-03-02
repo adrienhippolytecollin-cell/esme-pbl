@@ -149,7 +149,19 @@ difficulty_menu.grid(row=6, column=0, columnspan=3)
 draw_grid()
 root.mainloop()
 
+WINNING_COMBINATION = [
+    [0, 1, 2], [3, 4, 5], [6, 7, 8],  # lines
+    [0, 3, 6], [1, 4, 7], [2, 5, 8],  # columns
+    [0, 4, 8], [2, 4, 6]              # diagonales
+]
 
+def check_winner(board, player):
+    """returns True if a player won"""
+    for combo in WINNING_COMBINATION:
+        if all(board[i] == player for i in combo):
+            return True
+    return False
+    
 def evaluation(board):
     # evaluation function: -1000 if the player won, +1000 if thee AI won
     if check_winner(board, 1):
@@ -158,71 +170,135 @@ def evaluation(board):
         return -1000
     return 0
 
-def square_available(board):
-    #returns a list of the empty squares
-    list = []
-    for square in enumerate(board):
-        if square == 0:
-            list.append(square)
-    return list
+def is_full(board):
+    #retunrs True if the board is full (tie)
+    return all(square != 0 for square in board)
+
+def squares_available(board):
+    #returns a list of the empty squares' index
+    empty_squares = []
+    for i in range(len(board)):
+        if board[i] == 0:
+            empty_squares.append(i)
+    return empty_squares
 
 def minimax(board, level, is_max, level_max=None):
     """
-    parameters: 
-    - board: actual state of the game (list of 9 elements for each square)
-    - level: actual level in the tree
-    - is_max: true if its the AI's turn (node max), else: false (nose min)
-    - level_max: maximal level that we are looking for (None = unlimited)
+    Algorithm Minimax recursive.
 
-    returns: the score of the best combijation found
+    parameters :
+      - board: actual state of the game (list of 9elements for each square)
+      - level: actual level in the tree
+      - is_max: True if it's the AI's turn (node max),else: false (node min)
+      - level_max: maximal leveml that we are looking for (None = unlimited)
+
+    returns:
+      - the score of the best combination found
     """
-    #basic case: end of the game or maximal level reached
+    # Basic square: end of the game or maximal level reached
     score = evaluation(board)
-    if score != 0: # someone won
-        return score 
-    if is_full(board): # tie
+    if score != 0:  # someone won
+        return score
+    if is_full(board):  # tie
         return 0
     if level_max is not None and level >= level_max:
-        return 0 #we stop looking
+        return 0  # we stop looking
 
     available = squares_available(board)
 
-    if is_max: 
-        # Node max : the AI looks for the highest score
-        best_score = float ('-inf')
-        for case in available: 
-            board[square] = 1 # the AI plays
+    if is_max:
+        # Node MAX : The AI looks for the highest score
+        best_score = float('-inf')
+        for square in available:
+            board[square] = 1  # l'IA joue
             score = minimax(board, level + 1, False, level_max)
-            board[square] = max(bes_score, score)
+            board[square] = 0  # on annule le coup
+            best_score = max(best_score, score)
         return best_score
 
     else:
-        # node min : the other player looks for the lowest score
+        # Node MIN : The other player looks for the lowest score
+        best_score = float('inf')
         for square in available:
-            board[square] = -1 # the human player plays
+            board[square] = -1  # the human player plays
             score = minimax(board, level + 1, True, level_max)
-            board[case] = 0 # we cancel the play
+            board[square] = 0   # we cancel the play
             best_score = min(best_score, score)
         return best_score
 
+
 def best_play(board, level_max=None):
     """
-    finds the best combination of plays using the minimac function
-    returns: 
-    - the index of the square the AI must play
-    - the score associated to this play
+    find the best combination of plays using the minimax function
+
+    returns :
+      - the index of the square the AI must play 
+      - the score associated to this play
     """
     best_score = float('-inf')
     best_index = -1
-    for square in square_available(board):
-        board[square] = 1 #the AI plays
-        score = minimax(board, 1, False, level_max)
-        board[square] = 0
 
-        print(f" Square {square} -> score = {score}")
+    for square in squares_available(board):
+        board[square] = 1  # The AI plays
+        score = minimax(board, 1, False, level_max)
+        board[square] = 0  # We cancel
+
+        print(f"  square {square} → score = {score}")
+
         if score > best_score:
             best_score = score
             best_index = square
 
     return best_index, best_score
+
+def show_the_board(board):
+    """shows the board in the terminal"""
+    symboles = {0: '.', 1: 'O', -1: 'X'}
+    for ligne in range(3):
+        print(' | '.join(symboles[board[ligne * 3 + col]] for col in range(3)))
+        if ligne < 2:
+            print('-' * 9)
+    print()
+
+if __name__ == "__main__":
+    board = [0] * 9
+
+    print("\nSquares' indexes")
+    print("0 | 1 | 2")
+    print("-" * 9)
+    print("3 | 4 | 5")
+    print("-" * 9)
+    print("6 | 7 | 8\n")
+
+    turn = 0  # 0 = the human player's turn, 1 = the AI starts
+    while True:
+        show_the_board(board)
+
+        if not squares_available(board):
+            print("Tie !")
+            break
+
+        if turn % 2 == 0:
+            # The human's player turn !
+            choix = int(input("Your play (0-8) : "))
+            if board[choix] != 0:
+                print("This square is already filled, please try again")
+                continue
+            board[choix] = -1
+            if check_winner(board, -1):
+                show_the_board(board)
+                print("You won !!")
+                break
+        else:
+            # the AI's turn
+            print("The AI is thinking...")
+            indice, score = best_play(board)
+            board[indice] = 1
+            print(f"The AI played in the square {indice}")
+            if check_winner(board, 1):
+                show_the_board(board)
+                print("The AI won !")
+                break
+
+        turn += 1
 
