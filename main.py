@@ -113,7 +113,7 @@ def best_play(board, level_max=None):
 #creating the window
 root = tk.Tk()
 root.title("TicTacToe")
-root.minsize(5)), 600)
+root.minsize(500, 600)
 root.configure(bg="#1a1a2e")
 
 #creating the status
@@ -156,7 +156,7 @@ def check_win_and_tie():
         print_winner()
         return True
     if is_full(internal_board):
-        show_poput_tie()
+        show_popup_tie()
         return True
     return False
 
@@ -212,7 +212,7 @@ def check_win(clicked_row, clicked_col):
 
   
     #if no one wins, meaning the grid is full and there are no winning combination 
-    if win is False:
+"""if win is False:
         count = 0
         for col in range(3):
             for row in range(3):
@@ -220,14 +220,13 @@ def check_win(clicked_row, clicked_col):
                 if current_button['text'] == 'X' or current_button['text'] == '0':
                     count += 1
         if count == 9:
-            print("It's a tie!")
+            print("It's a tie!")"""
 
 
 
 
 #putting the corresponding symbol when a player clicks somewhere on the grid if the space is empty, then after each play we check if there is a win and if not we change player 
 def place_symbol(row, column):
-
     global win
     if win:
         return
@@ -277,7 +276,7 @@ def ai_move(difficulty):
     available = squares_available(internal_board)
     if not available:
         return
-    if difficulty == "EASY"
+    if difficulty == "EASY" :
         #random move
         chosen_index = random.choice(available)
     elif difficulty == "MEDIUM":
@@ -308,7 +307,7 @@ def draw_grid():
         for row in range(3):
             button = tk.Button(
                 root, font=("Arial", 50),
-                width=3, height=1, bg="#16213e", activebackground=#"0f3460", relief="flat",
+                width=3, height=1, bg="#16213e", activebackground="#0f3460", relief="flat",
                 command=lambda r=row, c=col: place_symbol(r, c)
             )
             button.grid(row=row, column=col, padx=4, pady=4)
@@ -373,6 +372,7 @@ difficulty_menu.pack(side="left")
 
 draw_grid()
 root.mainloop()
+
 
 
 
