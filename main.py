@@ -2,12 +2,12 @@ import tkinter as tk
 from tkinter import messagebox
 import random
 
-#coding part
+#minimax method
 
 WINNING_COMBINATION = [
     [0, 1, 2], [3, 4, 5], [6, 7, 8],  # lines
     [0, 3, 6], [1, 4, 7], [2, 5, 8],  # columns
-    [0, 4, 8], [2, 4, 6]              # diagonales
+    [0, 4, 8], [2, 4, 6]              # diagonals
 ]
 
 def check_winner(board, player):
@@ -16,9 +16,9 @@ def check_winner(board, player):
         if all(board[i] == player for i in combo):
             return True
     return False
-    
+
 def evaluation(board):
-    # evaluation function: -1000 if the player won, +1000 if thee AI won
+    """evaluation function: +1000 if the AI won, -1000 if the player won"""
     if check_winner(board, 1):
         return 1000
     if check_winner(board, -1):
@@ -26,7 +26,7 @@ def evaluation(board):
     return 0
 
 def is_full(board):
-    #retunrs True if the board is full (tie)
+    """returns True if the board is full (tie)"""
     empty_squares = []
     for i in range(len(board)):
         if board[i] == 0:
@@ -34,7 +34,7 @@ def is_full(board):
     return len(empty_squares) == 0
 
 def squares_available(board):
-    #returns a list of the empty squares' index
+    """returns a list of the empty squares' index"""
     empty_squares = []
     for i in range(len(board)):
         if board[i] == 0:
@@ -42,67 +42,45 @@ def squares_available(board):
     return empty_squares
 
 def minimax(board, level, is_max, level_max=None):
-    """
-    Algorithm Minimax recursive.
-
-    parameters :
-      - board: actual state of the game (list of 9elements for each square)
-      - level: actual level in the tree
-      - is_max: True if it's the AI's turn (node max),else: false (node min)
-      - level_max: maximal leveml that we are looking for (None = unlimited)
-
-    returns:
-      - the score of the best combination found
-    """
-    # Basic square: end of the game or maximal level reached
+    """recursive Minimax algorithm."""
     score = evaluation(board)
-    if score != 0:  # someone won
+    if score != 0:       # someone won
         return score
-    if is_full(board):  # tie
+    if is_full(board):   # tie
         return 0
     if level_max is not None and level >= level_max:
-        return 0  # we stop looking
+        return 0         # we stop looking
 
     available = squares_available(board)
 
     if is_max:
-        # Node MAX : The AI looks for the highest score
+        #node MAX: the AI looks for the highest score
         best_score = float('-inf')
         for square in available:
-            board[square] = 1  # l'IA joue
+            board[square] = 1        #the AI plays
             score = minimax(board, level + 1, False, level_max)
-            board[square] = 0  # on annule le coup
+            board[square] = 0        #we cancel the play
             best_score = max(best_score, score)
         return best_score
-
     else:
-        # Node MIN : The other player looks for the lowest score
+        #node MIN: the other player looks for the lowest score
         best_score = float('inf')
         for square in available:
-            board[square] = -1  # the human player plays
+            board[square] = -1       #the human player plays
             score = minimax(board, level + 1, True, level_max)
-            board[square] = 0   # we cancel the play
+            board[square] = 0        #we cancel the play
             best_score = min(best_score, score)
         return best_score
 
-
 def best_play(board, level_max=None):
-    """
-    find the best combination of plays using the minimax function
-
-    returns :
-      - the index of the square the AI must play 
-      - the score associated to this play
-    """
+    """find the best square for the AI using the minimax function."""
     best_score = float('-inf')
     best_index = -1
 
     for square in squares_available(board):
-        board[square] = 1  # The AI plays
+        board[square] = 1   #the AI plays
         score = minimax(board, 1, False, level_max)
-        board[square] = 0  # We cancel
-
-        print(f"  square {square} → score = {score}")
+        board[square] = 0   #we cancel
 
         if score > best_score:
             best_score = score
@@ -110,34 +88,44 @@ def best_play(board, level_max=None):
 
     return best_index, best_score
 
+
+#tkinter part
+
 #creating the window
 root = tk.Tk()
-root.title("TicTacToe")
+root.title("New game of TicTacToe")
 root.minsize(500, 600)
 root.configure(bg="#1a1a2e")
 
-#creating the status
-status_label = tk.Label(root, text="Current Player: X", font=("Arial", 15), bg = "#1a1a2e", fg = "white")
-status_label.grid(row=3, column=0, columnspan=3, pady = (10, 5))
+#creating the status label
+status_label = tk.Label(
+    root,
+    text="Current Player: X",
+    font=("Arial", 15),
+    bg="#1a1a2e",
+    fg="white"
+)
+status_label.grid(row=3, column=0, columnspan=3, pady=(10, 5))
 
-#game mode selection
+#game mode & difficulty
 game_mode_var = tk.StringVar(value="HUMAN")
 difficulty_var = tk.StringVar(value="EASY")
 
-# base variables
+#base variables
 buttons = []
-current_player = "X"
+current_player = 'X'
 win = False
 
-#internal board for minimax
+#internal numeric board for minimax (0=empty, 1=AI/'O', -1=human/'X')
 internal_board = [0] * 9
 
-#finishes the game as there has been a winning combisnation 
+
+#game code
+
 def print_winner():
     global win
     if win is False:
         win = True
-        print("Player", current_player, "has won! Congratulations!")
         show_popup_winner()
 
 def show_popup_winner():
@@ -149,10 +137,11 @@ def show_popup_tie():
     messagebox.showinfo("Game Over", "It's a tie!")
 
 def check_win_and_tie():
-    if check_winner(internal_board, -1): #human X won
+    """check winning combinations and tie using the internal board."""
+    if check_winner(internal_board, -1):   #human ('X') won
         print_winner()
         return True
-    if check_winner(internal_board, 1): #AI 0 won
+    if check_winner(internal_board, 1):    #AI ('O') won
         print_winner()
         return True
     if is_full(internal_board):
@@ -160,81 +149,30 @@ def check_win_and_tie():
         return True
     return False
 
-#switching players once each one has played once 
 def switch_player():
     global current_player
-    if current_player == "X":
-        current_player = 0
+    if current_player == 'X':
+        current_player = 'O'
     else:
-        current_player = "X"
+        current_player = 'X'
     if not win:
         status_label.config(text=f"Current Player: {current_player}")
 
-
-"""#finding winning combinations
-def check_win(clicked_row, clicked_col):
-
-    # horizontal (rows)
-    count = 0
-    for i in range(3):
-        current_button = buttons[i][clicked_row]
-        if current_button['text'] == current_player:
-            count += 1
-    if count == 3:
-        print_winner()
-
-    # vertical (columns)
-    count = 0
-    for i in range(3):
-        current_button = buttons[clicked_col][i]
-        if current_button['text'] == current_player:
-            count += 1
-    if count == 3:
-        print_winner()
-
-    # diagonal
-    count = 0
-    for i in range(3):
-        current_button = buttons[i][i]
-        if current_button['text'] == current_player:
-            count += 1
-    if count == 3:
-        print_winner()
-
-     # inverse diagonal (wouldnt find some victories without)
-    count = 0
-    for i in range(3):
-        current_button = buttons[2-i][i]
-        if current_button['text'] == current_player:
-            count += 1
-    if count == 3:
-        print_winner()"""
-
-  
-    #if no one wins, meaning the grid is full and there are no winning combination 
-"""if win is False:
-        count = 0
-        for col in range(3):
-            for row in range(3):
-                current_button = buttons[col][row]
-                if current_button['text'] == 'X' or current_button['text'] == '0':
-                    count += 1
-        if count == 9:
-            print("It's a tie!")"""
-
-
-
-
-#putting the corresponding symbol when a player clicks somewhere on the grid if the space is empty, then after each play we check if there is a win and if not we change player 
 def place_symbol(row, column):
     global win
+
     if win:
         return
 
+    #buttons[col][row] matches the grid construction below
     clicked_button = buttons[column][row]
-    
+
     if clicked_button['text'] == "":
-        clicked_button.config(text=current_player, fg="#e94560" if current_player == 'X' else "#0f3460")
+        #update button text
+        clicked_button.config(
+            text=current_player,
+            fg="#e94560" if current_player == 'X' else "#0f3460"
+        )
 
         #update internal board
         square_index = column * 3 + row   # col-major storage used in draw_grid
@@ -255,66 +193,62 @@ def place_symbol(row, column):
             root.after(300, lambda: ai_move(difficulty_var.get()))
 
 
-
-
-"""#the restart button 
-def restart_game():
-    global win, current_player
-    win = False
-    current_player = "X"
-    status_label.config(text="Current Player: X")
-
-    for col in range(3):
-        for row in range(3):
-            buttons[col][row].config(text="")"""
-
-
 def ai_move(difficulty):
+    """make the AI play based on difficulty."""
     global win
+
     if win:
         return
+
     available = squares_available(internal_board)
     if not available:
         return
-    if difficulty == "EASY" :
-        #random move
-        chosen_index = random.choice(available)
-    elif difficulty == "MEDIUM":
-        #minimax w/ depth of 3
-        chosen_index = best_play(internal_board, level_max=3)
-    else:
-        #full miniax (hard)
-        chosen_index = best_play(internal_board)
 
-    #convert flat index back to row, col
+    if difficulty == "EASY":
+        # Random move
+        chosen_index = random.choice(available)
+
+    elif difficulty == "MEDIUM":
+        # Minimax with depth limit of 3
+        chosen_index, _ = best_play(internal_board, level_max=3)
+
+    else:
+        # HARD: full minimax, unbeatable
+        chosen_index, _ = best_play(internal_board)
+
+    # Convert flat index back to (row, col) in col-major storage
     col = chosen_index // 3
     row = chosen_index % 3
 
-    buttons[col][row].config(text="0", gr="#0f3460")
+    buttons[col][row].config(text='O', fg="#0f3460")
     internal_board[chosen_index] = 1
 
     if check_win_and_tie():
         return
-    
+
     switch_player()
 
-#GRID DRAWING
 
-# drawing the grid inside a function to have a more efficient code (it endend up working) 
+#grid
+
 def draw_grid():
     for col in range(3):
         buttons_in_cols = []
         for row in range(3):
             button = tk.Button(
-                root, font=("Arial", 50),
-                width=3, height=1, bg="#16213e", activebackground="#0f3460", relief="flat",
+                root,
+                font=("Arial", 50),
+                width=3, height=1,
+                bg="#16213e",
+                activebackground="#0f3460",
+                relief="flat",
                 command=lambda r=row, c=col: place_symbol(r, c)
             )
             button.grid(row=row, column=col, padx=4, pady=4)
             buttons_in_cols.append(button)
         buttons.append(buttons_in_cols)
 
-#RESTART
+#restart
 
 def restart_game():
     global win, current_player
@@ -322,13 +256,14 @@ def restart_game():
     current_player = "X"
     status_label.config(text="Current Player: X")
 
-    for i in range (9):
+    for i in range(9):
         internal_board[i] = 0
 
     for col in range(3):
         for row in range(3):
             buttons[col][row].config(text="", bg="#16213e")
 
+#buttons
 
 restart_button = tk.Button(
     root,
@@ -343,7 +278,7 @@ restart_button = tk.Button(
 )
 restart_button.grid(row=4, column=0, columnspan=3, pady=8)
 
-# Game mode radio buttons
+#game mode radio buttons
 mode_frame = tk.Frame(root, bg="#1a1a2e")
 mode_frame.grid(row=5, column=0, columnspan=3, pady=4)
 
@@ -361,7 +296,7 @@ tk.Radiobutton(
     selectcolor="#0f3460", activebackground="#1a1a2e"
 ).pack(side="left", padx=6)
 
-# Difficulty dropdown
+#difficulty dropdown
 diff_frame = tk.Frame(root, bg="#1a1a2e")
 diff_frame.grid(row=6, column=0, columnspan=3, pady=4)
 
@@ -372,6 +307,7 @@ difficulty_menu.pack(side="left")
 
 draw_grid()
 root.mainloop()
+
 
 
 
