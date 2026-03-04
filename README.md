@@ -2,7 +2,7 @@
 
 **MVP Status:** \[e.g., v1.0-Production]
 
-**Group Members:** Adrien, Axelle, Nour R, Gabrièle P
+**Group Members:** Adrien, Axelle B, Nour R, Gabrièle P
 
 
 ## **🎯 Project Overview**
@@ -51,7 +51,9 @@ How can a user verify the code works?
 
 - List any test scripts included (e.g., pytest tests/).
 
-- Describe the "Happy Path" inputs for the demo.
+- **Describe the "Happy Path" inputs for the demo.**
+- In this scenario, our happy path would be for the player to actively try to win at the game. In human vs human, every victory should be detected by the algoritm. in human Vs AI, as the level gets harder it should be harder to win, and matches should end up in losses or ties in the hardest level. For AI vs AI, each Ai should be making logical choices and mimicking an actual gameplay. 
+  
 
 
 ## **📦 Dependencies**
@@ -59,8 +61,8 @@ How can a user verify the code works?
 **List the main third-party libraries used and _why_ they were chosen:**
 
 - Tkinter : in order to create a game window with functionning buttons
-- Tkinter.messagebox() module : provides a template base class
-- minimax : recursive minimax algorythm to collect and save pathways for the AI player 
+- Tkinter.messagebox() module : provides a template base class for popup win windows 
+- Minimax methode: recursive minimax algorythm to collect and save pathways for the AI player 
 
 
 ## **🔮 Future Roadmap (v2.0)**
