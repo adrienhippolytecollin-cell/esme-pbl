@@ -307,9 +307,3 @@ difficulty_menu.pack(side="left")
 
 draw_grid()
 root.mainloop()
-
-
-
-
-
-
