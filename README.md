@@ -2,31 +2,32 @@
 
 **MVP Status:** \[e.g., v1.0-Production]
 
-**Group Members:** Adrien, Axelle, Nour R, Gabrièle
+**Group Members:** Adrien, Axelle, Nour R, Gabrièle P
 
 
 ## **🎯 Project Overview**
 
 Provide a concise (2-3 sentence) description of what your application does and the specific problem it solves. Why did you build this?
 
-Our application allows to play Tic Tac Toe using 3 different modes: player vs player, player vs AI and AI vs AI. We also allow the player to chose the level of the AI he wants to compete against.We made this game to be able to play Tic Tac Toe alone or in pair and for all levels !
+Our application allows to play Tic Tac Toe using 3 different modes: player vs player, player vs AI and AI vs AI. We also allow the player to chose the level of the AI he wants to compete against. We made this game to be able to play Tic Tac Toe alone or in pair and for all levels !
 
 ## **🚀 Quick Start (Architect Level: < 60s Setup)**
 
 Instructions on how to get this project running on a fresh machine.
 
 1. **Clone the repo:**\
+   open git bash and type in : 
    git clone \[your-repo-link]\
    cd \[project-folder]
 
-2. **Setup Virtual Environment:**\
+3. **Setup Virtual Environment:**\
    python -m venv .venv\
    source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 
-3. **Install Dependencies:**\
+4. **Install Dependencies:**\
    pip install -r requirements.txt
 
-4. **Run Application:**\
+5. **Run Application:**\
    python main.py
 
 
