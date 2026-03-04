@@ -59,7 +59,8 @@ How can a user verify the code works?
 **List the main third-party libraries used and _why_ they were chosen:**
 
 - Tkinter : in order to create a game window with functionning buttons
-- 
+- Tkinter.messagebox() module : provides a template base class
+- minimax : recursive minimax algorythm to collect and save pathways for the AI player 
 
 
 ## **🔮 Future Roadmap (v2.0)**
