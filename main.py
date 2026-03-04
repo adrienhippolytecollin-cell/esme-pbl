@@ -17,11 +17,11 @@ def check_winner(board, player):
             return True
     return False
 
-def evaluation(board):
+def evaluation(board, player):
     """evaluation function: +1000 if the AI won, -1000 if the player won"""
-    if check_winner(board, 1):
+    if check_winner(board, player):
         return 1000
-    if check_winner(board, -1):
+    if check_winner(board, -player):
         return -1000
     return 0
 
@@ -41,7 +41,7 @@ def squares_available(board):
             empty_squares.append(i)
     return empty_squares
 
-def minimax(board, level, is_max, level_max=None, path=None, all_paths=None):
+def minimax(board, level, is_max, player=1, level_max=None, path=None, all_paths=None):
     """
     Recursive Minimax algorithm.
     - path: the current path of (square, who) steps taken so far
@@ -70,7 +70,7 @@ def minimax(board, level, is_max, level_max=None, path=None, all_paths=None):
         best_score = float('-inf')
         for square in available:
             board[square] = 1
-            score, all_paths = minimax(board, level + 1, False, level_max,
+            score, all_paths = minimax(board, level + 1, False, player, level_max,
                                        path + [(square, "AI")], all_paths)
             board[square] = 0
             best_score = max(best_score, score)
@@ -80,21 +80,21 @@ def minimax(board, level, is_max, level_max=None, path=None, all_paths=None):
         best_score = float('inf')
         for square in available:
             board[square] = -1
-            score, all_paths = minimax(board, level + 1, True, level_max,
+            score, all_paths = minimax(board, level + 1, True,player, level_max,
                                        path + [(square, "Human")], all_paths)
             board[square] = 0
             best_score = min(best_score, score)
         return best_score, all_paths
 
-def best_play(board, level_max=None):
+def best_play(board, player=1, level_max=None):
     """find the best square for the AI and return all explored paths."""
     best_score = float('-inf')
     best_index = -1
     chosen_paths = []
 
     for square in squares_available(board):
-        board[square] = 1
-        score, paths = minimax(board, 1, False, level_max, [(square, "AI")], [])
+        board[square] = player
+        score, paths = minimax(board, 1, False, player, level_max, [(square, "AI")], [])
         board[square] = 0
 
         if score > best_score:
@@ -130,6 +130,7 @@ difficulty_var = tk.StringVar(value="EASY")
 buttons = []
 current_player = 'X'
 win = False
+ai_symbol = "X"
 
 #internal numeric board for minimax (0=empty, 1=AI (O), -1=human (X))
 internal_board = [0] * 9
@@ -153,10 +154,10 @@ def show_popup_tie():
 
 def check_win_and_tie():
     """Check winning combinations and tie using the internal board."""
-    if check_winner(internal_board, -1): #human ('X') won
+    if check_winner(internal_board): #human ('O') won
         print_winner()
         return True
-    if check_winner(internal_board, 1): # AI ('O') won
+    if check_winner(internal_board, -1): # AI ('X') won
         print_winner()
         return True
     if is_full(internal_board):
@@ -179,6 +180,8 @@ def place_symbol(row, column):
     if win:
         return
 
+    player = 1 if ai_symbol == "O" else -1
+    opponent_symbol = "X" if ai_symbol == "O" else "O"
     # buttons[row][col]
     clicked_button = buttons[row][column]
 
@@ -186,15 +189,15 @@ def place_symbol(row, column):
         #update button text
         clicked_button.config(
             text=current_player,
-            fg="#e94560" if current_player == 'X' else "#0f3460"
+            fg="#e94560" if current_player == opponent_symbol else "#0f3460"
         )
 
         #update internal board: index = row * 3 + col
         square_index = row * 3 + column
-        if current_player == 'X':
-            internal_board[square_index] = -1
+        if current_player == opponent_symbol:
+            internal_board[square_index] = -player
         else:
-            internal_board[square_index] = 1
+            internal_board[square_index] = player
 
         #check game over
         if check_win_and_tie():
@@ -272,30 +275,36 @@ def ai_move(difficulty):
     if not available:
         return
 
+    if game_mode_var.get() == 'AIvsAI':
+        ai_symbol = current_player
+    player = 1 if ai_symbol = "O" else player = -1
+
     if difficulty == "EASY":
         chosen_index = random.choice(available)
         display_tree_paths(chosen_index, "N/A", [], difficulty)
 
     elif difficulty == "MEDIUM":
-        chosen_index, best_score, paths = best_play(internal_board, level_max=3)
+        chosen_index, best_score, paths = best_play(internal_board, player, level_max=3)
         display_tree_paths(chosen_index, best_score, paths, difficulty)
 
     else:  #HARD: full minimax, unbeatable
-        chosen_index, best_score, paths = best_play(internal_board)
+        chosen_index, best_score, paths = best_play(internal_board, player)
         display_tree_paths(chosen_index, best_score, paths, difficulty)
 
     #convert flat index to (row, col)
     row = chosen_index // 3
     col = chosen_index % 3
 
-    buttons[row][col].config(text='O', fg="#0f3460")
-    internal_board[chosen_index] = 1
+    buttons[row][col].config(text=ai_symbol, fg="#0f3460" if ai_symbol == "X" else "#0f3460")
+    internal_board[chosen_index] = player
 
     if check_win_and_tie():
         return
 
     switch_player()
-
+    
+    if game_mode_var.get() == "AIvsAI" and not win:
+        root.after(300, lambda: ai_move(difficulty_var.get()))
 
 #GRID
 
@@ -332,6 +341,13 @@ def restart_game():
     for row in range(3):
         for col in range(3):
             buttons[row][col].config(text="", bg="#16213e")
+            
+    # In AIvsAI mode, AI should start first
+    if game_mode_var.get() == "AIvsAI":
+        current_player = ai_symbol
+        root.after(500, lambda: ai_move(difficulty_var.get()))
+    else:
+        current_player = "X" if ai_symbol == "O" else "O"
 
     text_widget.config(state="normal")
     text_widget.delete("1.0", tk.END)
@@ -384,6 +400,12 @@ tk.Radiobutton(
     font=("Arial", 11), bg="#1a1a2e", fg="white",
     selectcolor="#0f3460", activebackground="#1a1a2e"
 ).pack(side="left", padx=6)
+tk.Radiobutton(
+    mode_frame, text="AI vs AI",
+    variable=game_mode_var, value="AIvsAI",
+    font=("Arial", 11), bg="#1a1a2e", fg="white",
+    selectcolor="#0f3460", activebackground="#1a1a2e"
+).pack(side="left", padx=6)
 
 #difficulty button
 diff_frame = tk.Frame(root, bg="#1a1a2e")
@@ -399,4 +421,5 @@ difficulty_menu.pack(side="left")
 
 draw_grid()
 root.mainloop()
+
 
