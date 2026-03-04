@@ -68,6 +68,8 @@ How can a user verify the code works?
 
 If given more time, we would have added some options for the AI vs AI game to have mutiple difficulty levels, in order to see different levels of AI competing against one another. 
 Another option discussed was to turn it into another known game, connect 4, but we ultimately decided to focus on other parts of the project first. 
+
+
 _Generated as part of the Algorithmique avancée Production Deliverables._
 
 __
