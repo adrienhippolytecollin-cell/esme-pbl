@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import messagebox
 import random
 
-#MINIMAX
+# using the MINIMAX method
 
 WINNING_COMBINATION = [
     [0, 1, 2], [3, 4, 5], [6, 7, 8], # lines
@@ -105,7 +105,7 @@ def best_play(board, player=1, level_max=None):
     return best_index, best_score, chosen_paths
 
 
-#TKINTER PART
+#1st TKINTER PART
 
 root = tk.Tk()
 root.title("TicTacToe")
@@ -421,5 +421,6 @@ difficulty_menu.pack(side="left")
 
 draw_grid()
 root.mainloop()
+
 
 
