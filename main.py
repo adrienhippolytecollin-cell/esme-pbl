@@ -307,7 +307,7 @@ def draw_grid():
             button = tk.Button(
                 root,
                 font=("Arial", 50),
-                width=3, height=2,
+                width=2, height=1,
                 bg="#16213e",
                 activebackground="#0f3460",
                 relief="sunken",
@@ -399,3 +399,4 @@ difficulty_menu.pack(side="left")
 
 draw_grid()
 root.mainloop()
+
