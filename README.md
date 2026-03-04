@@ -9,6 +9,7 @@
 
 Provide a concise (2-3 sentence) description of what your application does and the specific problem it solves. Why did you build this?
 
+Our application allows to play Tic Tac Toe using 3 different modes: player vs player, player vs AI and AI vs AI. We also allow the player to chose the level of the AI he wants to compete against.We made this game to be able to play Tic Tac Toe alone or in pair and for all levels !
 
 ## **🚀 Quick Start (Architect Level: < 60s Setup)**
 
