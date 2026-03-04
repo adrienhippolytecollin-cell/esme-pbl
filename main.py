@@ -277,7 +277,7 @@ def ai_move(difficulty):
 
     if game_mode_var.get() == 'AIvsAI':
         ai_symbol = current_player
-    player = 1 if ai_symbol == "O" else player = -1
+    player = 1 if ai_symbol == "O" else -1
 
     if difficulty == "EASY":
         chosen_index = random.choice(available)
@@ -421,6 +421,7 @@ difficulty_menu.pack(side="left")
 
 draw_grid()
 root.mainloop()
+
 
 
 
