@@ -36,9 +36,10 @@ Our application allows to play Tic Tac Toe using 3 different modes: player vs pl
 
 Explain how your code is organized. An "Architect-level" README should describe the separation of concerns.
 
-- **main.py**: Entry point of the application. Everything was put on one file as we were forking on mac and Os and any other option resulted in bugs from one side or another.
+- **main.py**: Entry point of the application. Everything was put on one file as we were working on mac and Os and any other option resulted in bugs from one side or another.
 
   **tkinter**
+  
   
 
 
