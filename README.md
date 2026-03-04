@@ -38,7 +38,13 @@ Explain how your code is organized. An "Architect-level" README should describe 
 
 - **main.py**: Entry point of the application. Everything was put on one file as we were working on mac and Os and any other option resulted in bugs from one side or another.
 
-  **tkinter**
+  **minimax**
+  implementing the method
+  **tkinter
+  creating a game window with functional buttons and functionalities, to choose the level or the type of game.
+  **game functions**
+  implementing the base game functions, like checking for victory, creating a grid or simply playing 
+  
   
   
 
