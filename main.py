@@ -154,7 +154,7 @@ def show_popup_tie():
 
 def check_win_and_tie():
     """Check winning combinations and tie using the internal board."""
-    if check_winner(internal_board): #human ('O') won
+    if check_winner(internal_board, 1): #human ('O') won
         print_winner()
         return True
     if check_winner(internal_board, -1): # AI ('X') won
@@ -421,6 +421,7 @@ difficulty_menu.pack(side="left")
 
 draw_grid()
 root.mainloop()
+
 
 
 
