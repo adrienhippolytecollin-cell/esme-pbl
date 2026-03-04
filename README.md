@@ -40,11 +40,12 @@ Explain how your code is organized. An "Architect-level" README should describe 
 
   **minimax**
   implementing the method
-  **tkinter
-  creating a game window with functional buttons and functionalities, to choose the level or the type of game.
+  **tkinter**
+  creating a game window. 
   **game functions**
   implementing the base game functions, like checking for victory, creating a grid or simply playing 
-  
+  ** controls**
+  creating the buttons and their functionalities with tkinter 
   
   
 
