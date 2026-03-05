@@ -52,7 +52,7 @@ def minimax(board, level, is_max, player=1, level_max=None, path=None, all_paths
     if all_paths is None:
         all_paths = []
 
-    score = evaluation(board)
+    score = evaluation(board, player)
     if score != 0: #someone won 
         all_paths.append((list(path), score))
         return score, all_paths
@@ -69,7 +69,7 @@ def minimax(board, level, is_max, player=1, level_max=None, path=None, all_paths
         #node MAX: the AI looks for the highest score
         best_score = float('-inf')
         for square in available:
-            board[square] = 1
+            board[square] = player
             score, all_paths = minimax(board, level + 1, False, player, level_max,
                                        path + [(square, "AI")], all_paths)
             board[square] = 0
@@ -79,7 +79,7 @@ def minimax(board, level, is_max, player=1, level_max=None, path=None, all_paths
         #node MIN: the other player looks for the lowest score
         best_score = float('inf')
         for square in available:
-            board[square] = -1
+            board[square] = -player
             score, all_paths = minimax(board, level + 1, True,player, level_max,
                                        path + [(square, "Human")], all_paths)
             board[square] = 0
@@ -110,14 +110,14 @@ def best_play(board, player=1, level_max=None):
 root = tk.Tk()
 root.title("TicTacToe")
 root.minsize(900, 600)
-root.configure(bg="#1a1a2e")
+root.configure(bg="#21512e")
 
 #status label
 status_label = tk.Label(
     root,
     text="CURRENT PLAYER: X",
     font=("Arial", 15),
-    bg="#1a1a2e",
+    bg="#21512e",
     fg="white"
 )
 status_label.grid(row=3, column=0, columnspan=3, pady=(10, 5))
@@ -207,7 +207,7 @@ def place_symbol(row, column):
         switch_player()
 
         #trigger AI move if needed
-        if game_mode_var.get() == "AI" and current_player == 'O' and not win:
+        if game_mode_var.get() == "AI" and current_player == ai_symbol and not win:
             root.after(300, lambda: ai_move(difficulty_var.get()))
 
 
@@ -266,7 +266,7 @@ def display_tree_paths(chosen_index, best_score, paths, difficulty):
 
 def ai_move(difficulty):
     """make the AI play based on difficulty."""
-    global win
+    global win, ai_symbol
 
     if win:
         return
@@ -330,9 +330,16 @@ def draw_grid():
 #RESTART
 
 def restart_game():
-    global win, current_player
+    global win, current_player, ai_symbol
+
     win = False
     current_player = "X"
+
+    if game_mode_var.get() == "AI":
+        ai_symbol = "O"        # humain joue X, IA joue O
+    elif game_mode_var.get() == "AIvsAI":
+        ai_symbol = "X"        # X commence en AI vs AI
+
     status_label.config(text="CURRENT PLAYER: X")
 
     for i in range(9):
@@ -347,7 +354,7 @@ def restart_game():
         current_player = ai_symbol
         root.after(500, lambda: ai_move(difficulty_var.get()))
     else:
-        current_player = "X" if ai_symbol == "O" else "O"
+        current_player = "X"
 
     text_widget.config(state="normal")
     text_widget.delete("1.0", tk.END)
@@ -384,36 +391,36 @@ restart_button = tk.Button(
 restart_button.grid(row=4, column=0, columnspan=3, pady=8)
 
 #game mode radio buttons
-mode_frame = tk.Frame(root, bg="#1a1a2e")
+mode_frame = tk.Frame(root, bg="#21512e")
 mode_frame.grid(row=5, column=0, columnspan=3, pady=4)
 
-tk.Label(mode_frame, text="MODE:", font=("Arial", 11), bg="#1a1a2e", fg="white").pack(side="left")
+tk.Label(mode_frame, text="MODE:", font=("Arial", 11), bg="#21512e", fg="white").pack(side="left")
 tk.Radiobutton(
     mode_frame, text="Human vs Human",
     variable=game_mode_var, value="HUMAN",
-    font=("Arial", 11), bg="#1a1a2e", fg="white",
-    selectcolor="#0f3460", activebackground="#1a1a2e"
+    font=("Arial", 11), bg="#21512e", fg="white",
+    selectcolor="#21512e", activebackground="#21512e"
 ).pack(side="left", padx=6)
 tk.Radiobutton(
     mode_frame, text="Human vs AI",
     variable=game_mode_var, value="AI",
-    font=("Arial", 11), bg="#1a1a2e", fg="white",
-    selectcolor="#0f3460", activebackground="#1a1a2e"
+    font=("Arial", 11), bg="#21512e", fg="white",
+    selectcolor="#21512e", activebackground="#21512e"
 ).pack(side="left", padx=6)
 tk.Radiobutton(
     mode_frame, text="AI vs AI",
     variable=game_mode_var, value="AIvsAI",
-    font=("Arial", 11), bg="#1a1a2e", fg="white",
-    selectcolor="#0f3460", activebackground="#1a1a2e"
+    font=("Arial", 11), bg="#21512e", fg="white",
+    selectcolor="#21512e", activebackground="#21512e"
 ).pack(side="left", padx=6)
 
 #difficulty button
-diff_frame = tk.Frame(root, bg="#1a1a2e")
+diff_frame = tk.Frame(root, bg="#21512e")
 diff_frame.grid(row=6, column=0, columnspan=3, pady=4)
 
-tk.Label(diff_frame, text="Difficulty:", font=("Arial", 11), bg="#1a1a2e", fg="white").pack(side="left", padx=6)
+tk.Label(diff_frame, text="Difficulty:", font=("Arial", 11), bg="#21512e", fg="white").pack(side="left", padx=6)
 difficulty_menu = tk.OptionMenu(diff_frame, difficulty_var, "EASY", "MEDIUM", "HARD")
-difficulty_menu.config(font=("Arial", 11), bg="#0f3460", fg="white",
+difficulty_menu.config(font=("Arial", 11), bg="#21512e", fg="white",
                        activebackground="#e94560", relief="flat")
 difficulty_menu.pack(side="left")
 
@@ -421,7 +428,6 @@ difficulty_menu.pack(side="left")
 
 draw_grid()
 root.mainloop()
-
 
 
 
