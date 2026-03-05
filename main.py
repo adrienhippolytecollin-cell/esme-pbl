@@ -336,9 +336,9 @@ def restart_game():
     current_player = "X"
 
     if game_mode_var.get() == "AI":
-        ai_symbol = "O"        # humain joue X, IA joue O
+        ai_symbol = "O"        # humain plays X, IA plays O
     elif game_mode_var.get() == "AIvsAI":
-        ai_symbol = "X"        # X commence en AI vs AI
+        ai_symbol = "X"        # X starts witjh AI vs AI
 
     status_label.config(text="CURRENT PLAYER: X")
 
@@ -428,6 +428,7 @@ difficulty_menu.pack(side="left")
 
 draw_grid()
 root.mainloop()
+
 
 
 
